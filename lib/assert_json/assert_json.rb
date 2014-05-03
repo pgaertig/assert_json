@@ -44,6 +44,7 @@ module AssertJson
               end
       case token
       when Hash
+        arg = arg.to_s
         raise_error("element #{arg} not found") unless token.keys.include?(arg)
         unless args.empty?
           second_arg = args.shift
@@ -61,7 +62,7 @@ module AssertJson
         when Regexp
           raise_error("element #{arg.inspect} not found") if token !~ arg
         else
-          raise_error("element #{arg.inspect} not found") if token != arg
+          raise_error("element #{arg.inspect} not found") if token != arg.to_s
         end
       when NilClass
         raise_error("no element left")

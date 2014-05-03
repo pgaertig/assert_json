@@ -344,4 +344,35 @@ class AssertJsonNewDslTest < Test::Unit::TestCase
     end
   end
 
+  def test_symbol_as_a_key
+    assert_json '{"sym": true, "text": "1"}' do
+      has :sym, true
+      has :text, /\d+/
+      has_not :bad_sym
+    end
+    assert_json '{"sym": false, "text": "2"}' do
+      has :sym, false
+      has :text, /\d+/
+      has_not :bad_sym
+    end
+  end
+
+  def test_symbol_as_a_key_crossheck
+    assert_raises(MiniTest::Assertion) do
+      assert_json '{"text": "1"}' do
+        has :sym, true  #this should fail
+        has :text, /\d+/
+        has_not :bad_sym
+      end
+    end
+
+    assert_raises(MiniTest::Assertion) do
+      assert_json '{"sym": false, "text": "abc"}' do
+        has :sym, false
+        has :text, /\d+/   #this should fail
+        has_not :bad_sym
+      end
+    end
+  end
+
 end
